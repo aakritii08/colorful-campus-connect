@@ -13,6 +13,7 @@ import {
   ClipboardList
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ interface SidebarProps {
 interface NavItem {
   title: string;
   href: string;
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon: LucideIcon;
   color?: string;
 }
 
