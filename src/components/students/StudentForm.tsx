@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DialogFooter } from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -45,7 +46,6 @@ const formSchema = z.object({
     email: z.string().email("Invalid email format"),
   }),
   achievements: z.array(z.string()).optional(),
-  // We'll handle marks separately
 });
 
 type StudentFormProps = {
@@ -83,16 +83,32 @@ export const StudentForm = ({ student, onSubmit, onCancel }: StudentFormProps) =
   });
 
   const handleFormSubmit = (values: z.infer<typeof formSchema>) => {
-    const updatedStudent: Student = {
-      id: student?.id || `STU${Math.floor(Math.random() * 10000)}`,
-      ...values,
-      avatar: avatarUrl,
-      marks: student?.marks || [],
-      tags: values.tags || [],
-      achievements: values.achievements || [],
-    };
-    
-    onSubmit(updatedStudent);
+    try {
+      const updatedStudent: Student = {
+        id: student?.id || `STU${Math.floor(Math.random() * 10000)}`,
+        name: values.name,
+        lastName: values.lastName,
+        grade: values.grade,
+        class: values.class,
+        avatar: avatarUrl,
+        dob: values.dob,
+        address: values.address,
+        admissionDate: values.admissionDate,
+        performance: values.performance,
+        attendance: values.attendance,
+        gpa: values.gpa,
+        marks: student?.marks || [],
+        tags: values.tags || [],
+        parents: values.parents,
+        achievements: values.achievements || [],
+      };
+      
+      onSubmit(updatedStudent);
+      toast.success("Student information saved successfully");
+    } catch (error) {
+      console.error("Error saving student:", error);
+      toast.error("Failed to save student information");
+    }
   };
 
   return (

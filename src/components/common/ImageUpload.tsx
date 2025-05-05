@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Upload, Image } from "lucide-react";
+import { toast } from "sonner";
 
 interface ImageUploadProps {
   currentImage?: string;
@@ -29,6 +30,9 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     if (imageUrl) {
       onImageChange(imageUrl);
       setIsUrlInput(false);
+      toast.success("Image updated successfully");
+    } else {
+      toast.error("Please enter a valid image URL");
     }
   };
   

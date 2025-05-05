@@ -20,29 +20,27 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App: React.FC = () => (
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter>
-          <MainLayout>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/students" element={<Students />} />
-              <Route path="/teachers" element={<Teachers />} />
-              <Route path="/parents" element={<Parents />} />
-              <Route path="/sports" element={<Sports />} />
-              <Route path="/exams" element={<Exams />} />
-              <Route path="/library" element={<Library />} />
-              <Route path="/calendar" element={<CalendarPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </MainLayout>
-        </BrowserRouter>
-        <Toaster />
-        <SonnerToaster />
-      </TooltipProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <BrowserRouter>
+        <MainLayout>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/students" element={<Students />} />
+            <Route path="/teachers" element={<Teachers />} />
+            <Route path="/parents" element={<Parents />} />
+            <Route path="/sports" element={<Sports />} />
+            <Route path="/exams" element={<Exams />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </MainLayout>
+      </BrowserRouter>
+      <Toaster />
+      <SonnerToaster />
+    </TooltipProvider>
+  </QueryClientProvider>
 );
 
 export default App;
