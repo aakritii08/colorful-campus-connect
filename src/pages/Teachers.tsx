@@ -4,18 +4,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TeacherCard } from "@/components/teachers/TeacherCard";
 import { TeacherDetails } from "@/components/teachers/TeacherDetails";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, UserX } from "lucide-react";
 import { Teacher } from "@/types/teacher";
 import { Dialog } from "@/components/ui/dialog";
-import { teachersData } from "@/data/teachersData";
 
 const Teachers = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   
   // Filter teachers based on search term
-  const filteredTeachers = teachersData.filter(teacher => {
+  const filteredTeachers = teachers.filter(teacher => {
     return `${teacher.name} ${teacher.lastName} ${teacher.subjects.join(" ")}`.toLowerCase().includes(searchTerm.toLowerCase());
   });
   
@@ -55,8 +55,9 @@ const Teachers = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-12">
+          <UserX size={64} className="text-muted-foreground mb-4" />
           <p className="text-xl font-medium">No teachers found</p>
-          <p className="text-muted-foreground">Try adjusting your search</p>
+          <p className="text-muted-foreground">Add teachers to see them here</p>
         </div>
       )}
 

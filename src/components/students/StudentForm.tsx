@@ -99,7 +99,12 @@ export const StudentForm = ({ student, onSubmit, onCancel }: StudentFormProps) =
         gpa: values.gpa,
         marks: student?.marks || [],
         tags: values.tags || [],
-        parents: values.parents,
+        parents: {
+          fatherName: values.parents.fatherName,
+          motherName: values.parents.motherName,
+          contactNumber: values.parents.contactNumber,
+          email: values.parents.email
+        },
         achievements: values.achievements || [],
       };
       

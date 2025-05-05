@@ -14,10 +14,9 @@ import {
 import { StudentCard } from "@/components/students/StudentCard";
 import { StudentDetails } from "@/components/students/StudentDetails";
 import { StudentForm } from "@/components/students/StudentForm";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, UserX } from "lucide-react";
 import { Student } from "@/types/student";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { studentsData } from "@/data/studentsData";
 
 const Students = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,7 +24,7 @@ const Students = () => {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [students, setStudents] = useState<Student[]>(studentsData);
+  const [students, setStudents] = useState<Student[]>([]);
   
   // Filter students based on search term and selected grade
   const filteredStudents = students.filter(student => {
@@ -98,8 +97,9 @@ const Students = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center py-12">
+          <UserX size={64} className="text-muted-foreground mb-4" />
           <p className="text-xl font-medium">No students found</p>
-          <p className="text-muted-foreground">Try adjusting your search or filter</p>
+          <p className="text-muted-foreground">Add students to see them here</p>
         </div>
       )}
 
