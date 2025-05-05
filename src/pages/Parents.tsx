@@ -12,7 +12,14 @@ import {
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Search, Plus } from "lucide-react";
+import { Search, Plus, Upload } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ImageUpload } from "@/components/common/ImageUpload";
 
 interface Parent {
   id: string;
@@ -75,12 +82,24 @@ const parentsData: Parent[] = [
 
 const Parents = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [parents, setParents] = useState<Parent[]>(parentsData);
+  const [selectedParent, setSelectedParent] = useState<Parent | null>(null);
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false);
   
   // Filter parents based on search term
-  const filteredParents = parentsData.filter(parent => {
+  const filteredParents = parents.filter(parent => {
     const searchText = `${parent.name} ${parent.lastName} ${parent.email} ${parent.children.join(" ")}`.toLowerCase();
     return searchText.includes(searchTerm.toLowerCase());
   });
+
+  const handleImageUpdate = (newImageUrl: string) => {
+    if (selectedParent) {
+      const updatedParent = { ...selectedParent, avatar: newImageUrl };
+      setParents(parents.map(p => p.id === selectedParent.id ? updatedParent : p));
+      setSelectedParent(null);
+      setIsImageDialogOpen(false);
+    }
+  };
   
   return (
     <div className="space-y-6 animate-fade-in">
@@ -118,10 +137,24 @@ const Parents = () => {
               <TableRow key={parent.id}>
                 <TableCell className="font-medium">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={parent.avatar} alt={parent.name} />
-                      <AvatarFallback>{parent.name.charAt(0)}{parent.lastName.charAt(0)}</AvatarFallback>
-                    </Avatar>
+                    <div className="relative">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={parent.avatar} alt={parent.name} />
+                        <AvatarFallback>{parent.name.charAt(0)}{parent.lastName.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="absolute -bottom-1 -right-1 h-4 w-4 p-0 rounded-full bg-muted hover:bg-muted-foreground/20"
+                        onClick={() => {
+                          setSelectedParent(parent);
+                          setIsImageDialogOpen(true);
+                        }}
+                      >
+                        <Upload className="h-2 w-2" />
+                        <span className="sr-only">Change image</span>
+                      </Button>
+                    </div>
                     {parent.name} {parent.lastName}
                   </div>
                 </TableCell>
@@ -142,6 +175,27 @@ const Parents = () => {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Update Profile Image</DialogTitle>
+          </DialogHeader>
+          {selectedParent && (
+            <div className="flex flex-col items-center space-y-4">
+              <ImageUpload
+                currentImage={selectedParent.avatar}
+                onImageChange={handleImageUpdate}
+                fallback={`${selectedParent.name.charAt(0)}${selectedParent.lastName.charAt(0)}`}
+                className="h-32 w-32"
+              />
+              <p className="text-center text-sm text-muted-foreground">
+                Enter the URL of the image you want to use for {selectedParent.name} {selectedParent.lastName}
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import {
   DialogContent,
   DialogHeader,
@@ -10,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
+import { ImageUpload } from "@/components/common/ImageUpload";
 import {
   Calendar,
   GraduationCap,
@@ -24,9 +25,24 @@ import { Teacher } from "@/types/teacher";
 interface TeacherDetailsProps {
   teacher: Teacher;
   onClose: () => void;
+  onUpdate?: (updatedTeacher: Teacher) => void;
 }
 
-export const TeacherDetails = ({ teacher, onClose }: TeacherDetailsProps) => {
+export const TeacherDetails = ({ teacher, onClose, onUpdate }: TeacherDetailsProps) => {
+  const [isEditingImage, setIsEditingImage] = useState(false);
+  const [currentTeacher, setCurrentTeacher] = useState<Teacher>(teacher);
+
+  const handleImageUpdate = (newImageUrl: string) => {
+    const updatedTeacher = { ...currentTeacher, avatar: newImageUrl };
+    setCurrentTeacher(updatedTeacher);
+    
+    if (onUpdate) {
+      onUpdate(updatedTeacher);
+    }
+    
+    setIsEditingImage(false);
+  };
+
   return (
     <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
       <DialogHeader>
@@ -36,30 +52,51 @@ export const TeacherDetails = ({ teacher, onClose }: TeacherDetailsProps) => {
 
       <div className="grid md:grid-cols-3 gap-6">
         <div className="flex flex-col items-center space-y-3">
-          <Avatar className="h-32 w-32 border-4 border-background">
-            <AvatarImage src={teacher.avatar} />
-            <AvatarFallback>{teacher.name.charAt(0)}{teacher.lastName.charAt(0)}</AvatarFallback>
-          </Avatar>
+          {isEditingImage ? (
+            <ImageUpload
+              currentImage={currentTeacher.avatar}
+              onImageChange={handleImageUpdate}
+              fallback={`${currentTeacher.name.charAt(0)}${currentTeacher.lastName.charAt(0)}`}
+              className="h-32 w-32"
+            />
+          ) : (
+            <>
+              <Avatar className="h-32 w-32 border-4 border-background">
+                <AvatarImage src={currentTeacher.avatar} />
+                <AvatarFallback>{currentTeacher.name.charAt(0)}{currentTeacher.lastName.charAt(0)}</AvatarFallback>
+              </Avatar>
+              {onUpdate && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs" 
+                  onClick={() => setIsEditingImage(true)}
+                >
+                  Change Image
+                </Button>
+              )}
+            </>
+          )}
           <div className="text-center">
-            <h2 className="text-xl font-bold">{teacher.name} {teacher.lastName}</h2>
-            <p className="text-muted-foreground">{teacher.id}</p>
+            <h2 className="text-xl font-bold">{currentTeacher.name} {currentTeacher.lastName}</h2>
+            <p className="text-muted-foreground">{currentTeacher.id}</p>
           </div>
           <div className="w-full space-y-2">
             <div className="flex items-center gap-2">
               <Briefcase className="h-4 w-4 text-muted-foreground" />
-              <span>{teacher.position}</span>
+              <span>{currentTeacher.position}</span>
             </div>
             <div className="flex items-center gap-2">
               <User className="h-4 w-4 text-muted-foreground" />
-              <span>Gender: {teacher.gender}</span>
+              <span>Gender: {currentTeacher.gender}</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span>DOJ: {teacher.dateOfJoining}</span>
+              <span>DOJ: {currentTeacher.dateOfJoining}</span>
             </div>
           </div>
           <div className="flex flex-wrap gap-1 justify-center mt-3">
-            {teacher.subjects.map((subject, index) => (
+            {currentTeacher.subjects.map((subject, index) => (
               <Badge key={index} variant="secondary">
                 {subject}
               </Badge>
@@ -74,11 +111,11 @@ export const TeacherDetails = ({ teacher, onClose }: TeacherDetailsProps) => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  <span>{teacher.phone}</span>
+                  <span>{currentTeacher.phone}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span className="truncate">{teacher.email}</span>
+                  <span className="truncate">{currentTeacher.email}</span>
                 </div>
               </div>
             </div>
@@ -94,19 +131,19 @@ export const TeacherDetails = ({ teacher, onClose }: TeacherDetailsProps) => {
             <div className="bg-muted p-3 rounded-md grid grid-cols-2 gap-3">
               <div>
                 <p className="text-sm text-muted-foreground">Qualification</p>
-                <p>{teacher.qualification}</p>
+                <p>{currentTeacher.qualification}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Experience</p>
-                <p>{teacher.experience} years</p>
+                <p>{currentTeacher.experience} years</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Salary</p>
-                <p>₹{teacher.salary.toLocaleString()}</p>
+                <p>₹{currentTeacher.salary.toLocaleString()}</p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Date of Joining</p>
-                <p>{teacher.dateOfJoining}</p>
+                <p>{currentTeacher.dateOfJoining}</p>
               </div>
             </div>
           </div>
@@ -119,7 +156,7 @@ export const TeacherDetails = ({ teacher, onClose }: TeacherDetailsProps) => {
               Teaching Subjects
             </h3>
             <div className="grid grid-cols-2 gap-2">
-              {teacher.subjects.map((subject, idx) => (
+              {currentTeacher.subjects.map((subject, idx) => (
                 <div key={idx} className="bg-muted p-2 rounded-md">
                   {subject}
                 </div>

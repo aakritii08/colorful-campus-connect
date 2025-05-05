@@ -1,9 +1,10 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
+import { ImageUpload } from "@/components/common/ImageUpload";
 import { Award, Calendar, Clock, MapPin, Trophy, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Sport {
   id: string;
@@ -93,18 +94,73 @@ const sportsData: Sport[] = [
 ];
 
 const Sports = () => {
+  const [sports, setSports] = useState<Sport[]>(sportsData);
+  const [editingSportId, setEditingSportId] = useState<string | null>(null);
+
+  const handleImageUpdate = (sportId: string, newImage: string) => {
+    setSports(prevSports => 
+      prevSports.map(sport => 
+        sport.id === sportId ? { ...sport, image: newImage } : sport
+      )
+    );
+    setEditingSportId(null);
+  };
+
+  const handleCoachImageUpdate = (sportId: string, newImage: string) => {
+    setSports(prevSports => 
+      prevSports.map(sport => 
+        sport.id === sportId 
+          ? { ...sport, coach: { ...sport.coach, avatar: newImage } } 
+          : sport
+      )
+    );
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <h1 className="text-3xl font-bold">Sports Programs</h1>
       <div className="grid gap-6 sm:grid-cols-2">
-        {sportsData.map((sport) => (
+        {sports.map((sport) => (
           <Card key={sport.id} className="card-hover overflow-hidden">
-            <div className="h-48 overflow-hidden">
-              <img 
-                src={sport.image} 
-                alt={sport.name} 
-                className="w-full h-full object-cover"
-              />
+            <div className="h-48 overflow-hidden relative">
+              {editingSportId === sport.id ? (
+                <div className="absolute inset-0 bg-background/80 flex items-center justify-center p-4">
+                  <div className="bg-card p-4 rounded-lg shadow-lg w-full max-w-md">
+                    <h3 className="font-medium mb-3">Update Sport Image</h3>
+                    <ImageUpload
+                      currentImage={sport.image}
+                      onImageChange={(url) => handleImageUpdate(sport.id, url)}
+                      fallback={sport.name.charAt(0)}
+                      className="h-20 w-20 mx-auto"
+                    />
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setEditingSportId(null)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <img 
+                    src={sport.image} 
+                    alt={sport.name} 
+                    className="w-full h-full object-cover"
+                  />
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="absolute top-2 right-2 bg-background/80"
+                    onClick={() => setEditingSportId(sport.id)}
+                  >
+                    Change Image
+                  </Button>
+                </>
+              )}
             </div>
             <CardHeader>
               <CardTitle className="text-xl flex items-center gap-2">
@@ -112,10 +168,24 @@ const Sports = () => {
                 {sport.name}
               </CardTitle>
               <CardDescription className="flex items-center gap-2">
-                <Avatar className="h-6 w-6">
-                  <AvatarImage src={sport.coach.avatar} alt={sport.coach.name} />
-                  <AvatarFallback>{sport.coach.name.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Avatar className="h-6 w-6">
+                    <AvatarImage src={sport.coach.avatar} alt={sport.coach.name} />
+                    <AvatarFallback>{sport.coach.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="absolute -bottom-1 -right-1 h-4 w-4 p-0 rounded-full bg-muted"
+                    onClick={() => {
+                      const newImage = prompt("Enter coach image URL:", sport.coach.avatar);
+                      if (newImage) handleCoachImageUpdate(sport.id, newImage);
+                    }}
+                  >
+                    <span className="sr-only">Edit coach image</span>
+                    <span className="text-xs">+</span>
+                  </Button>
+                </div>
                 <span>Coach: {sport.coach.name}</span>
               </CardDescription>
             </CardHeader>

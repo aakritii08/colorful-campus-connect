@@ -13,9 +13,10 @@ import {
 } from "@/components/ui/select";
 import { StudentCard } from "@/components/students/StudentCard";
 import { StudentDetails } from "@/components/students/StudentDetails";
+import { StudentForm } from "@/components/students/StudentForm";
 import { Plus, Search } from "lucide-react";
 import { Student } from "@/types/student";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { studentsData } from "@/data/studentsData";
 
 const Students = () => {
@@ -23,9 +24,11 @@ const Students = () => {
   const [selectedGrade, setSelectedGrade] = useState<string>("all");
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [students, setStudents] = useState<Student[]>(studentsData);
   
   // Filter students based on search term and selected grade
-  const filteredStudents = studentsData.filter(student => {
+  const filteredStudents = students.filter(student => {
     const matchesSearch = `${student.name} ${student.lastName}`.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesGrade = selectedGrade === "all" || student.grade.toString() === selectedGrade;
     return matchesSearch && matchesGrade;
@@ -35,12 +38,23 @@ const Students = () => {
     setSelectedStudent(student);
     setShowDetails(true);
   };
+
+  const handleAddStudent = (newStudent: Student) => {
+    setStudents([...students, newStudent]);
+    setShowAddForm(false);
+  };
+
+  const handleUpdateStudent = (updatedStudent: Student) => {
+    setStudents(students.map(s => 
+      s.id === updatedStudent.id ? updatedStudent : s
+    ));
+  };
   
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Students</h1>
-        <Button>
+        <Button onClick={() => setShowAddForm(true)}>
           <Plus className="mr-2 h-4 w-4" /> Add Student
         </Button>
       </div>
@@ -91,9 +105,25 @@ const Students = () => {
 
       {showDetails && selectedStudent && (
         <Dialog open={showDetails} onOpenChange={setShowDetails}>
-          <StudentDetails student={selectedStudent} onClose={() => setShowDetails(false)} />
+          <StudentDetails 
+            student={selectedStudent} 
+            onClose={() => setShowDetails(false)} 
+            onUpdate={handleUpdateStudent}
+          />
         </Dialog>
       )}
+
+      <Dialog open={showAddForm} onOpenChange={setShowAddForm}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Add New Student</DialogTitle>
+          </DialogHeader>
+          <StudentForm 
+            onSubmit={handleAddStudent} 
+            onCancel={() => setShowAddForm(false)} 
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
