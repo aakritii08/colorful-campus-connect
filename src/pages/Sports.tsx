@@ -88,7 +88,7 @@ const sportsData: Sport[] = [
       "3 State Medalists 2024",
       "Regional Champions 2023"
     ],
-    image: "https://images.unsplash.com/photo-1532383282788-55fee5d54df5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80"
   }
 ];
 

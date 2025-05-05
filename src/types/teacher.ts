@@ -9,4 +9,10 @@ export interface Teacher {
   email: string;
   phone: string;
   experience: number;
+  
+  // Additional fields
+  gender: string;
+  qualification: string;
+  salary: number;
+  dateOfJoining: string;
 }

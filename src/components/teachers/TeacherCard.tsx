@@ -7,9 +7,10 @@ import { Teacher } from "@/types/teacher";
 
 interface TeacherCardProps {
   teacher: Teacher;
+  onViewDetails: () => void;
 }
 
-export const TeacherCard = ({ teacher }: TeacherCardProps) => {
+export const TeacherCard = ({ teacher, onViewDetails }: TeacherCardProps) => {
   return (
     <Card className="card-hover overflow-hidden">
       <CardHeader className="p-0">
@@ -42,7 +43,7 @@ export const TeacherCard = ({ teacher }: TeacherCardProps) => {
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button variant="outline" size="sm">Profile</Button>
-        <Button size="sm">Contact</Button>
+        <Button size="sm" onClick={onViewDetails}>View Details</Button>
       </CardFooter>
     </Card>
   );

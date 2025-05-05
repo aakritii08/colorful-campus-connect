@@ -3,87 +3,27 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TeacherCard } from "@/components/teachers/TeacherCard";
+import { TeacherDetails } from "@/components/teachers/TeacherDetails";
 import { Plus, Search } from "lucide-react";
 import { Teacher } from "@/types/teacher";
-
-// Mock data
-const teachersData: Teacher[] = [
-  {
-    id: "TCH001",
-    name: "Robert",
-    lastName: "Johnson",
-    position: "Math Teacher",
-    subjects: ["Mathematics", "Advanced Algebra"],
-    avatar: "https://i.pravatar.cc/150?img=11",
-    email: "robert.j@school.edu",
-    phone: "555-0123",
-    experience: 8
-  },
-  {
-    id: "TCH002",
-    name: "Sarah",
-    lastName: "Davis",
-    position: "Science Teacher",
-    subjects: ["Physics", "Chemistry"],
-    avatar: "https://i.pravatar.cc/150?img=16",
-    email: "sarah.d@school.edu",
-    phone: "555-0124",
-    experience: 12
-  },
-  {
-    id: "TCH003",
-    name: "Michael",
-    lastName: "Brown",
-    position: "English Teacher",
-    subjects: ["English Literature", "Creative Writing"],
-    avatar: "https://i.pravatar.cc/150?img=12",
-    email: "michael.b@school.edu",
-    phone: "555-0125",
-    experience: 15
-  },
-  {
-    id: "TCH004",
-    name: "Jennifer",
-    lastName: "Wilson",
-    position: "History Teacher",
-    subjects: ["World History", "American History"],
-    avatar: "https://i.pravatar.cc/150?img=20",
-    email: "jennifer.w@school.edu",
-    phone: "555-0126",
-    experience: 10
-  },
-  {
-    id: "TCH005",
-    name: "David",
-    lastName: "Martinez",
-    position: "Physical Education",
-    subjects: ["PE", "Health Education"],
-    avatar: "https://i.pravatar.cc/150?img=15",
-    email: "david.m@school.edu",
-    phone: "555-0127",
-    experience: 7
-  },
-  {
-    id: "TCH006",
-    name: "Emily",
-    lastName: "Thompson",
-    position: "Art Teacher",
-    subjects: ["Art", "Design"],
-    avatar: "https://i.pravatar.cc/150?img=19",
-    email: "emily.t@school.edu",
-    phone: "555-0128",
-    experience: 6
-  },
-];
+import { Dialog } from "@/components/ui/dialog";
+import { teachersData } from "@/data/teachersData";
 
 const Teachers = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
   
   // Filter teachers based on search term
   const filteredTeachers = teachersData.filter(teacher => {
     return `${teacher.name} ${teacher.lastName} ${teacher.subjects.join(" ")}`.toLowerCase().includes(searchTerm.toLowerCase());
   });
   
+  const handleViewDetails = (teacher: Teacher) => {
+    setSelectedTeacher(teacher);
+    setShowDetails(true);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -106,7 +46,11 @@ const Teachers = () => {
       {filteredTeachers.length > 0 ? (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredTeachers.map((teacher) => (
-            <TeacherCard key={teacher.id} teacher={teacher} />
+            <TeacherCard 
+              key={teacher.id} 
+              teacher={teacher} 
+              onViewDetails={() => handleViewDetails(teacher)}
+            />
           ))}
         </div>
       ) : (
@@ -114,6 +58,12 @@ const Teachers = () => {
           <p className="text-xl font-medium">No teachers found</p>
           <p className="text-muted-foreground">Try adjusting your search</p>
         </div>
+      )}
+
+      {showDetails && selectedTeacher && (
+        <Dialog open={showDetails} onOpenChange={setShowDetails}>
+          <TeacherDetails teacher={selectedTeacher} onClose={() => setShowDetails(false)} />
+        </Dialog>
       )}
     </div>
   );
