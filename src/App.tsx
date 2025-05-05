@@ -1,6 +1,7 @@
 
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -15,30 +16,33 @@ import Library from "./pages/Library";
 import CalendarPage from "./pages/Calendar";
 import NotFound from "./pages/NotFound";
 
+// Create a new QueryClient instance
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <MainLayout>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/students" element={<Students />} />
-            <Route path="/teachers" element={<Teachers />} />
-            <Route path="/parents" element={<Parents />} />
-            <Route path="/sports" element={<Sports />} />
-            <Route path="/exams" element={<Exams />} />
-            <Route path="/library" element={<Library />} />
-            <Route path="/calendar" element={<CalendarPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </MainLayout>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+const App: React.FC = () => (
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserRouter>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/students" element={<Students />} />
+              <Route path="/teachers" element={<Teachers />} />
+              <Route path="/parents" element={<Parents />} />
+              <Route path="/sports" element={<Sports />} />
+              <Route path="/exams" element={<Exams />} />
+              <Route path="/library" element={<Library />} />
+              <Route path="/calendar" element={<CalendarPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </MainLayout>
+        </BrowserRouter>
+        <Toaster />
+        <SonnerToaster />
+      </TooltipProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
 );
 
 export default App;

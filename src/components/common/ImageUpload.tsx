@@ -12,12 +12,12 @@ interface ImageUploadProps {
   className?: string;
 }
 
-export const ImageUpload = ({ 
+export const ImageUpload: React.FC<ImageUploadProps> = ({ 
   currentImage, 
   onImageChange, 
   fallback, 
   className = "h-24 w-24" 
-}: ImageUploadProps) => {
+}) => {
   const [imageUrl, setImageUrl] = useState<string>(currentImage || "");
   const [isUrlInput, setIsUrlInput] = useState<boolean>(false);
   
@@ -35,7 +35,7 @@ export const ImageUpload = ({
   return (
     <div className="flex flex-col items-center gap-2">
       <Avatar className={`border-4 border-background ${className}`}>
-        <AvatarImage src={currentImage || imageUrl} />
+        <AvatarImage src={currentImage || imageUrl} alt={fallback} />
         <AvatarFallback>{fallback}</AvatarFallback>
       </Avatar>
       
